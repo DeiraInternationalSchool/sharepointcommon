@@ -1,0 +1,3 @@
+nuget push *.nupkg
+
+pause
