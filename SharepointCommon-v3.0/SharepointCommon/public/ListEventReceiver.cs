@@ -15,6 +15,8 @@ namespace SharepointCommon
         internal bool Cancelled;
         internal string Message;
 
+        public IQueryWeb ParentWeb { get; internal set; }
+
         public virtual void Cancel(string message, params object[] args)
         {
             Cancelled = true;

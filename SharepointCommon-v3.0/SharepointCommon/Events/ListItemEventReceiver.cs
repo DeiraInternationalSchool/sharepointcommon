@@ -72,10 +72,12 @@ namespace SharepointCommon.Events
             {
                 var receiverProps = GetEventReceiverType(properties, eventReceiverType);
                 var receiver = Activator.CreateInstance(receiverProps.EventReceiverType);
+                SetParentWeb(receiver, properties.Web);
                 var method = receiverProps.EventReceiverType.GetMethod(methodName,BindingFlags.Instance | BindingFlags.Public);
                 var receiverParam = method.GetParameters().First();
 
                 var eventDisabled = GetEventFiringDisabled(method);
+                
 
                 bool origDisabledValue = false;
                 try
@@ -127,6 +129,7 @@ namespace SharepointCommon.Events
 
                 var receiverProps = GetEventReceiverType(properties, eventReceiverType);
                 var receiver = Activator.CreateInstance(receiverProps.EventReceiverType);
+                SetParentWeb(receiver, properties.Web);
                 var method = receiverProps.EventReceiverType.GetMethod(methodName,
                     BindingFlags.Instance | BindingFlags.Public);
                 var receiverParam = method.GetParameters().First();
@@ -178,6 +181,13 @@ namespace SharepointCommon.Events
             {
                 throw tex.InnerException;
             }
+        }
+
+        private void SetParentWeb(object receiver, SPWeb web)
+        {
+            var prop = receiver.GetType().GetProperty("ParentWeb");
+            var qweb = WebFactory.Open(web);
+            prop.SetValue(receiver, qweb);
         }
 
         private bool GetEventFiringDisabled(MethodInfo method)
